@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/list', 'PostController@index');
 Route::post('/post', 'PostController@store');
 Route::get('/postlist', 'PostController@getPost');
+Route::post('/register', 'PostController@register');
 // Route::get('/post', function () {
 //     //return view('welcome');
 //     echo "arif";
