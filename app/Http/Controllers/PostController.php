@@ -29,6 +29,46 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+       /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+       public function logOut(Request $request){
+
+        $data = $request->input();
+    $resData = ApiOAuth::check();
+
+        $validator = Validator::make($request->all(), [
+            'oauth_token' => 'required',
+        ]);
+
+
+        if ($validator->fails())
+        {
+            $error =  $validator->errors()->all();
+            $this->arr['status'] = 0;
+            $this->arr['message'] = $error;
+            return Response::json($this->arr);
+        } else {
+            $isUserLogEx = UserLog::where('oauth_token', $data['oauth_token'])->where('is_loggedin',1)->first();
+            if(count($isUserLogEx)>0){
+                //UserLog::where('oauth_token', $data['oauth_token'])->update(['is_loggedin' => 0]);
+                UserLog::where('oauth_token', $data['oauth_token'])->delete();
+                $this->arr['status'] = 1;
+                $this->arr['message'] = "you are sucessfully logout!";
+                return Response::json($this->arr);
+            } else {
+                $this->arr['status'] = 0;
+                $this->arr['message'] = 'token not found try again!';
+                return Response::json($this->arr);
+            }
+
+
+        }
+    }
       public function getPost()
     {
         //
@@ -146,43 +186,7 @@ class PostController extends Controller
 
    }
 
-        /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
 
-       public function logOut(Request $request){
-        $data = $request->input();
-
-        $validator = Validator::make($request->all(), [
-            'oauth_token' => 'required',
-        ]);
- dd($data['oauth_token']);
- exit();
-        if ($validator->fails())
-        {
-            $error =  $validator->errors()->all();
-            $this->arr['status'] = 0;
-            $this->arr['message'] = $error;
-            return Response::json($this->arr);
-        } else {
-            $isUserLogEx = UserLog::where('oauth_token', $data['oauth_token'])->where('is_loggedin',1)->first();
-            if(count($isUserLogEx)>0){
-                //UserLog::where('oauth_token', $data['oauth_token'])->update(['is_loggedin' => 0]);
-                UserLog::where('oauth_token', $data['oauth_token'])->delete();
-                $this->arr['status'] = 1;
-                $this->arr['message'] = "you are sucessfully logout!";
-                return Response::json($this->arr);
-            } else {
-                $this->arr['status'] = 0;
-                $this->arr['message'] = 'token not found try again!';
-                return Response::json($this->arr);
-            }
-
-
-        }
-    }
 
     /**
      * Show the form for creating a new resource.
